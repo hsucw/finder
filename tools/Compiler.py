@@ -251,8 +251,7 @@ class Compiler(object):
                 subName, subImplements, subDecorators = getInterfaceScheme_helper(comp, self.solver, self.vManager)
                 depends = deferImplement_helper(self.vManager, subImplements)
                 if  len(depends) > 0:
-                    self.classGraph[subName] = depends
-                    self.outsideClasses[subName] = comp
+                    self.deferManager.addClass(subName, depends, comp)
                 else:
                     self.solver(comp)
             else:
@@ -320,8 +319,7 @@ class Compiler(object):
                 subName, subImplements, subDecorators = getInterfaceScheme_helper(comp, self.solver, self.vManager)
                 depends = deferImplement_helper(self.vManager, subImplements)
                 if  len(depends) > 0:
-                    self.classGraph[subName] = depends
-                    self.outsideClasses[subName] = comp
+                    self.deferManager.addClass(subName, depends, comp)
                 else:
                     self.solver(comp)
             else:

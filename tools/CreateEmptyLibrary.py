@@ -9,7 +9,6 @@ import Config
 import Compiler
 from Helper import *
 
-logger = logging.getLogger(__name__)
 
 def dependency_helper(solver, vManager, classes=None, interfaces=None):
     return set()
@@ -62,16 +61,14 @@ class SimpleCompiler(Compiler.Compiler):
                 subName, subImplements, subDecorators = getClassScheme_helper(comp, self.solver, self.vManager)
                 depends = deferImplement_helper(self.vManager, subImplements)
                 if  len(depends) > 0:
-                    self.classGraph[subName] = depends
-                    self.outsideClasses[subName] = comp
+                    self.deferManager.addClass(subName, depends, comp)
                 else:
                     self.solver(comp)
             elif type(comp) == plyj.InterfaceDeclaration:
                 subName, subImplements, subDecorators = getInterfaceScheme_helper(comp, self.solver, self.vManager)
                 depends = deferImplement_helper(self.vManager, subImplements)
                 if  len(depends) > 0:
-                    self.classGraph[subName] = depends
-                    self.outsideClasses[subName] = comp
+                    self.deferManager.addClass(subName, depends, comp)
                 else:
                     self.solver(comp)
             else:
@@ -121,16 +118,14 @@ class SimpleCompiler(Compiler.Compiler):
                 subName, subImplements, subDecorators = getClassScheme_helper(comp, self.solver, self.vManager)
                 depends = deferImplement_helper(self.vManager, subImplements)
                 if  len(depends) > 0:
-                    self.classGraph[subName] = depends
-                    self.outsideClasses[subName] = comp
+                    self.deferManager.addClass(subName, depends, comp)
                 else:
                     self.solver(comp)
             elif type(comp) == plyj.InterfaceDeclaration:
                 subName, subImplements, subDecorators = getInterfaceScheme_helper(comp, self.solver, self.vManager)
                 depends = deferImplement_helper(self.vManager, subImplements)
                 if  len(depends) > 0:
-                    self.classGraph[subName] = depends
-                    self.outsideClasses[subName] = comp
+                    self.deferManager.addClass(subName, depends, comp)
                 else:
                     self.solver(comp)
             else:
@@ -196,6 +191,8 @@ class SimpleCompiler(Compiler.Compiler):
             self.p(result)
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
     source = Config.System.LIBJAVA
     out    = path.abspath(path.join(Config.Path.OUT, Config.System.VERSION, "java/java"))
 
@@ -207,6 +204,7 @@ if __name__ == '__main__':
             outPath = path.abspath(path.join(out, path.relpath(inPath, source)))
             outFile = path.abspath(path.join(outPath, file.replace(".java", ".py")))
             compiler = SimpleCompiler()
+            logger.info(inFile)
             parser = plyj.Parser().parse_file(inFile)
             result = compiler.compile(parser)
             
