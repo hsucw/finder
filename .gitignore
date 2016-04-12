@@ -2,7 +2,6 @@
 _IInterface/
 _Stub/
 out/
-
 # ply generated files
 lextab.py
 parsetab.py
@@ -29,7 +28,6 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
 develop-eggs/
 dist/
 downloads/
