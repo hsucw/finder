@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import Config
 import logging
 import plyj.parser as plyj
 import sys
@@ -17,7 +18,6 @@ import Includer
 import DeferClassManager
 from Helper import *
 
-import Config
 
 logger = logging.getLogger(__name__)
 
@@ -794,6 +794,9 @@ class Compiler(object):
             targets[0] = self.vManager.decorate(targets[0], SELF_INSTANCE)
         return "{}.{}({})".format(".".join(keywordReplace_helper(i) for i in targets), name, ", ".join(args))
 
+    def ExpressionStatement(self, body):
+        return
+
     def Wildcard(self, body):
         return 
 
@@ -973,6 +976,7 @@ class Continue(Exception):
 
 class ClassOverriding(Exception):
     pass
+
 
 
 def dumper(body, stop = False):

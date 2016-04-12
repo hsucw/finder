@@ -16,7 +16,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
     sourcePool = Config.System.JAVA_LIBS
-    out = path.join(Config.Path.OUT, Config.System.VERSION, "java")
+    out = path.join(Config.Path.CUROUT, "java")
     if not os.path.exists(out):
         os.mkdir(out)
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         os.remove(Includer.absjoin(out, sys.argv[1].replace(".", "/")+".py"))
         imports.add(sys.argv[1])
     else:
-        files = Includer.absjoin(Config.Path.OUT, Config.System.VERSION, "Parcel_list")
+        files = Includer.absjoin(Config.Path.CUROUT, "Parcel_list")
 
         # load used creator files
         with open(files, "r") as ffd:

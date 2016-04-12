@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
+import Config
 import logging
-import lib.plyj.parser as plyj
+import plyj.parser as plyj
 import sys
 import os
 import json
 from os import path
 
-import Config
 import Selector
 
 logger = logging.getLogger(__name__)
@@ -388,8 +388,8 @@ class Compiler(object):
         tArgs = []
         for arg in body.type_arguments:
             tArgs.append(self.solver(arg))
-        if  len(tArgs) > 0:
-            type_arguments = "<{}>".format(", ".join(tArgs))
+        if  len(tArgs) > 0 :
+            type_arguments = "<{}>".format(", ".join( str(v) for v in tArgs))
         else:
             type_arguments = ""
         enclosed_in=body.enclosed_in
@@ -586,6 +586,16 @@ class Compiler(object):
         target = self.solver(body.target)
         return "{}[{}]".format(target, index)
 
+    #To-Do
+    def ExpressionStatement(self, body):
+        return
+
+    def Wildcard(self, body):
+        return
+
+    def ClassInitializer(self, body):
+        return
+
     def solver(self, thing):
         if  type(thing) == type(None):
             return thing
@@ -662,7 +672,7 @@ def translator(inputFd, outputFd):
     root = parser.parse_file(inputFd)
 
     #compiler = Compiler(outputFd)
-    search = os.path.join(Config.Path._IINTERFACE, Config.System.VERSION)
+    search = os.path.join(Config.Path._IINTERFACE)
     compiler = Compiler(fd = outputFd, dependencyPaths = [search])
     compiler.header()
     compiler.compile(root)
@@ -676,7 +686,7 @@ if __name__ == '__main__':
     
     """
     exitFunctions = set()
-    inputPath = os.path.join( Config.Path._NATIVE_STUB, Config.System.VERSION, "ActivityManagerNative.java")
+    inputPath = os.path.join( Config.Path._NATIVE_STUB, "ActivityManagerNative.java")
     nativeMethodPath = "ClassDeclaration[name$=Proxy]>MethodDeclaration[throws*=RemoteException]"
     result = Selector.Selector(inputPath).query(nativeMethodPath)
     for item in result:
@@ -685,8 +695,8 @@ if __name__ == '__main__':
         translator(inputFd, sys.stdout)
     """
 
-    sourcePath = os.path.join( Config.Path._IINTERFACE, Config.System.VERSION)
-    outputPath = os.path.join(Config.Path.OUT, Config.System.VERSION, "stub")
+    sourcePath = os.path.join( Config.Path._IINTERFACE)
+    outputPath = os.path.join(Config.Path.CUROUT, "stub")
     if not os.path.exists(outputPath):
         os.makedirs(outputPath)
 
@@ -702,7 +712,7 @@ if __name__ == '__main__':
                 os.remove(outputFile)
                 logger.warn("Not Found stub in file. # remove '{}'".format(file))
 
-    sourcePath = os.path.join(Config.Path._NATIVE_STUB, Config.System.VERSION)
+    sourcePath = os.path.join(Config.Path._NATIVE_STUB)
     for file in os.listdir(sourcePath):
         inputFile = os.path.join(sourcePath, file)
         exitFunctions = set()
@@ -719,6 +729,6 @@ if __name__ == '__main__':
                 os.remove(outputFile)
                 logger.warn("Not Found stub in file. # remove '{}'".format(file))
 
-    parcelList = path.join( Config.Path.OUT, Config.System.VERSION, "Parcel_list")
+    parcelList = path.join( Config.Path.CUROUT, "Parcel_list")
     with open(parcelList, "w") as pfd:
         pfd.write("\n".join(creators))

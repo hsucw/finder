@@ -1,7 +1,7 @@
 import logging
 import re
 
-import lib.plyj.parser as plyj
+import plyj.parser as plyj
 import Compiler
 
 logger = logging.getLogger(__name__)

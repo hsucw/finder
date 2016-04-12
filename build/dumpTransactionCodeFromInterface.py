@@ -50,7 +50,7 @@ if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)
 
     inputDir  = Config.Path._IINTERFACE
-    outputDir = os.path.join(Config.Path._IINTERFACE , "transaction_code")
+    outputDir = os.path.join(Config.Path.CUROUT , "transaction_code")
     filePaths = os.listdir(inputDir)
 
     if not os.path.exists(outputDir):
