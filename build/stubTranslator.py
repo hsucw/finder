@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 import Config
 import logging
@@ -30,7 +30,7 @@ class Formater(object):
         else:
             a = ""
         return "{}import {} {}\n".format(f, file, a)
-        
+
 class VariableManager(object):
     def __init__(self):
         self.vTable = {}
@@ -183,7 +183,7 @@ class Compiler(object):
                 return rootTree[node]
             elif type(rootTree[node]) is dict and len(rootTree[node]) > 0:
                 candidates.append(node)
-        
+
         for node in candidates:
             result = self._index(rootTree[node], name)
             if  result is not None:
@@ -209,7 +209,7 @@ class Compiler(object):
                 for file in os.listdir(pkgPath):
                     if  file.endswith(".java"):
                         self.siblings.add(file[:-5])
-        return 
+        return
 
     def ImportDeclaration(self, body):
         name = self.solver(body.name)
@@ -293,7 +293,7 @@ class Compiler(object):
             self.indent(name)
             self.unindent()
         return None
-        
+
     def IfThenElse(self, body):
         predicate = self.solver(body.predicate)
         self.p("if {}:\n".format(predicate))
@@ -370,7 +370,7 @@ class Compiler(object):
 
     def Statement(self, body):
         raise Undefined
-    
+
     def Assignment(self, body):
         # Assignment(operator='=', lhs=Name(value='_arg1'), rhs=MethodInvocation(name='readInt', arguments=[], type_arguments=[], target=Name(value='data')))
         operator = self.solver(body.operator)
@@ -532,7 +532,7 @@ class Compiler(object):
             return "\'{target}.{name}({args})\'".format(target = target, name = name, args = ", ".join(i for i in args))
 
         return "{target}.{name}({args})".format(target = target, name = name, args = ", ".join(i for i in args))
-    
+
     def Equality(self, body):
         operator = self.solver(body.operator)
         lhs = self.solver(body.lhs)
@@ -550,7 +550,7 @@ class Compiler(object):
         lhs = self.solver(body.lhs)
         rhs = self.solver(body.rhs)
         return "({} {} {})".format(lhs, operator, rhs)
-    
+
     def Unary(self, body):
         """
         sign=<type 'str'>
@@ -576,7 +576,7 @@ class Compiler(object):
         dimensions = "".join("[None for _i in range({})]".format(i) for i in dims)
         initializer = body.initializer
         return "{dimensions} # {type}".format(type = mtype, dimensions = dimensions)
-    
+
     def ArrayAccess(self, body):
         """
         index=<class 'plyj.model.Name'>
@@ -621,7 +621,7 @@ class InterfaceResolver(Compiler):
         for comp in body.body:
             self.solver(comp)
         self.unindent()
-        
+
     def ClassDeclaration(self, body):
         return
 
@@ -642,13 +642,12 @@ class InterfaceResolver(Compiler):
         return None
 
     def crawlDependency(self, name):
-        return 
+        return
 
     def compile(self, body):
         """ entry function """
         self.solver(body)
-        
-         
+
 class Undefined(Exception):
     pass
 
@@ -683,7 +682,6 @@ if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)
     creators = set()
 
-    
     """
     exitFunctions = set()
     inputPath = os.path.join( Config.Path._NATIVE_STUB, "ActivityManagerNative.java")
@@ -695,11 +693,11 @@ if __name__ == '__main__':
         translator(inputFd, sys.stdout)
     """
 
-    sourcePath = os.path.join( Config.Path._IINTERFACE)
     outputPath = os.path.join(Config.Path.CUROUT, "stub")
     if not os.path.exists(outputPath):
         os.makedirs(outputPath)
 
+    sourcePath = os.path.join( Config.Path._IINTERFACE)
     for file in os.listdir(sourcePath):
         inputFile = os.path.join(sourcePath, file)
         exitFunctions = set()
@@ -710,7 +708,7 @@ if __name__ == '__main__':
                 translator(inputFd, outputFd)
             except NotFoundStub as e:
                 os.remove(outputFile)
-                logger.warn("Not Found stub in file. # remove '{}'".format(file))
+                logger.warn("Not Found stub in file. # remove '{}'".format(outputFile))
 
     sourcePath = os.path.join(Config.Path._NATIVE_STUB)
     for file in os.listdir(sourcePath):
@@ -727,7 +725,7 @@ if __name__ == '__main__':
                 translator(inputFd, outputFd)
             except NotFoundStub as e:
                 os.remove(outputFile)
-                logger.warn("Not Found stub in file. # remove '{}'".format(file))
+                logger.warn("Not Found stub in file. # remove '{}'".format(outputFile))
 
     parcelList = path.join( Config.Path.CUROUT, "Parcel_list")
     with open(parcelList, "w") as pfd:

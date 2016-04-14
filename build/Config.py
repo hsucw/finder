@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #config loader
 from os import path
 from xml.etree import ElementTree

@@ -1,7 +1,7 @@
 import logging
 import sys
 
-import tools.Config as Config
+import build.Config as Config
 sys.path.append(Config.Path.CREATOR)
 from android.os.StrictMode import StrictMode
 
@@ -12,11 +12,14 @@ class Stub(object):
         pass
 
     def creatorResolver(self, name, *args):
-        """ function call to require creator constructor for reconstruct java object from parcel raw data
+        """ function call to require creator constructor for reconstruct \
+        java object from parcel raw data
+        from
         _arg0 = android.media.AudioAttributes.CREATOR.createFromParcel(data);
         to
         _arg0 = self.creatorResolver("android.media.AudioAttributes", data)
         """
+
         className = name.split(".")[-1]
         try:
             creator = __import__(name, globals(), locals(), className)
@@ -30,13 +33,17 @@ class Stub(object):
 
     def interfaceResolver(self, name, strongBinder):
         """ function call of 'asInterface', ex:
+        from:
         _arg3 = android.media.IAudioFocusDispatcher.Stub.asInterface(data.readStrongBinder());
-        to
+        to:
         _arg3 = self.interfaceResolver("android.media.IAudioFocusDispatcher", data.readStrongBinder())
         """
         return "solved interface of [{}]".format(name)
 
     def newInstance(self, name, *args):
+        """
+            Do not know this
+        """
         if  len(args) == 0:
             return object()
         if  name == "StrictMode.ViolationInfo":
@@ -47,6 +54,6 @@ class Stub(object):
         result = list(args)
         result.insert(0, funName)
         return result
-       
+
 class CallCreator(Exception):
     pass

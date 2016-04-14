@@ -4,6 +4,7 @@ import os
 import json
 import argparse
 import sys
+import build.Config as Config
 
 import lib.Parse as Parse
 import lib.ProcessTable as PTable
@@ -16,7 +17,6 @@ import lib.StructureSolver as StructureSolver
 import lib.Module as Module
 from lib.FilterAdaptor import FilterAdaptor
 
-import tools.Config as Config
 
 def finder(fd, filter=None, ps=None):
     """finder entry function"""
@@ -29,7 +29,7 @@ def finder(fd, filter=None, ps=None):
     pAdaptor = PAdaptor.ProcessAdaptor(pTable)
 
     #loaders
-    iLoader = ILoader.InterfaceLoader(os.path.join(Config.Path.OUT, Config.System.VERSION, "interface"))
+    iLoader = ILoader.InterfaceLoader(os.path.join(Config.Path.CUROUT, "interface"))
     sSolver = StructureSolver.Solver("Stubs")
 
 

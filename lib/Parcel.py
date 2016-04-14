@@ -10,7 +10,7 @@ from JavaUtils.IBinder import IBinder
 from PersistableBundle import PersistableBundle
 from Bundle import Bundle
 
-import tools.Config as Config
+import build.Config as Config
 
 logger = logging.getLogger(__name__)
 BYTE = 4

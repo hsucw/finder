@@ -7,7 +7,7 @@ import Parcel
 import InterfaceLoader
 import Module
 
-import tools.Config as Config
+import build.Config as Config
 
 logger = logging.getLogger(__name__)
 
