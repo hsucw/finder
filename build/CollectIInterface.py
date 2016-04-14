@@ -42,33 +42,41 @@ def recursiveCopy(source, target, excludePattern, includePattern, matchPattern):
 if __name__ == '__main__':
     logging.basicConfig(level = logging.DEBUG)
 
+    # The common exclude file pattern
     excludePattern = ['.git', 'vnc']
 
-    logger.info("Collecting system level interface: ")
+    # The source and destination directory path
     framework = Config.System.FRAMEWORK
     interface = Config.Path._IINTERFACE
+    aidl      = Config.System.AIDL_CACHE
+    core      = Config.System.JAVA_POOL
+    native    = Config.Path._NATIVE_STUB
+    hardware  = Config.Path._HARDWARE
+
+    # Check the out fold existence
     if not os.path.exists(interface):
         os.makedirs(interface)
+    if not os.path.exists(native):
+        os.makedirs(native)
+    if not os.path.exists(hardware):
+        os.makedirs(hardware)
+
+    # The pattern for matching, using lambda function
     interfacePattern = (lambda buf: re.search("extends (android.os.)?IInterface[^>]",buf)\
             and (buf.find("descriptor") > 0 or buf.find("Stub") > 0))
+    nativePattern = (lambda buf: buf.find("descriptor") > 0 )
+    hardwarePattern = (lambda buf: buf.find("IMPLEMENT_META_INTERFACE") > 0 )
+
+    # Start to Collection
+    logger.info("Collecting system level interface: ")
     recursiveCopy(framework, interface, excludePattern, ["I*.java"], interfacePattern)
 
     logger.info("Collecting AIDL interface: ")
-    aidl      = Config.System.AIDL_CACHE
     recursiveCopy(aidl, interface, excludePattern, ["*.java"], interfacePattern)
 
     logger.info("Collecting Native interface: ")
-    core      = Config.System.JAVA_POOL
-    native    = Config.Path._NATIVE_STUB
-    if not os.path.exists(native):
-        os.makedirs(native)
-    nativePattern = (lambda buf: buf.find("descriptor") > 0 )
     recursiveCopy(core, native, excludePattern, ["*Native.java"], nativePattern)
 
     logger.info("Collecting Hardware interface: ")
-    hardware  = Config.Path._HARDWARE
-    if not os.path.exists(hardware):
-        os.makedirs(hardware)
-    hardwarePattern = (lambda buf: buf.find("IMPLEMENT_META_INTERFACE") > 0 )
     recursiveCopy(framework, hardware, excludePattern, ["I*.cpp"], hardwarePattern)
 
