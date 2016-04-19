@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-
-import lib.plyj.parser as plyj
+import sys
+sys.path.append("../lib")
+import plyj.parser as plyj
 from plyj import model
 
 def dumper(name, object, indent=0, indent_prefix = "    "):
@@ -22,10 +23,9 @@ def dumper(name, object, indent=0, indent_prefix = "    "):
         print "{indent}{r_name}: '{val}'".format( indent = indent_prefix*indent, r_name = name, val = str(object))
 
 if __name__ == '__main__':
-    filePath = "/home/lucas/Downloads/IBluetooth.java"
+    filePath = sys.argv[1]
     parser = plyj.Parser()
     tree = parser.parse_file(file(filePath))    # syntax tree root
     #print tree
 
     dumper(tree.__class__.__name__, tree)
-    

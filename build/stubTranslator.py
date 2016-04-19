@@ -480,6 +480,7 @@ class Compiler(object):
                     raise Exception(_result)
                 """
                 creators.add(_result)
+                logger.debug("ADD .CREATOR {}".format(_result))
             else:
                 args.append(_result)
 
@@ -509,6 +510,10 @@ class Compiler(object):
 
         if  name == "createFromParcel":
             offset = target.find(".CREATOR")
+            if offset < 0:
+                offset = target.find(".CHAR_SEQUENCE_CREATOR")
+                if offset < 0:
+                   raise NotFoundStub
             target = target[:offset]
             if  target in self.imports:
                 target = self.imports[target]
@@ -520,6 +525,7 @@ class Compiler(object):
                 raise Exception(target)
             """
             creators.add(target)
+            logger.debug("ADD .createFromParcel {}".format(target))
             return "self.creatorResolver({args})".format(args = ", ".join(i for i in args))
 
         if  name == "asInterface":
@@ -693,11 +699,12 @@ if __name__ == '__main__':
         translator(inputFd, sys.stdout)
     """
 
-    outputPath = os.path.join(Config.Path.CUROUT, "stub")
+    outputPath = Config.Path.STUB
     if not os.path.exists(outputPath):
         os.makedirs(outputPath)
 
-    sourcePath = os.path.join( Config.Path._IINTERFACE)
+    logger.info("translate _IINTERFACE")
+    sourcePath = Config.Path._IINTERFACE
     for file in os.listdir(sourcePath):
         inputFile = os.path.join(sourcePath, file)
         exitFunctions = set()
@@ -710,7 +717,8 @@ if __name__ == '__main__':
                 os.remove(outputFile)
                 logger.warn("Not Found stub in file. # remove '{}'".format(outputFile))
 
-    sourcePath = os.path.join(Config.Path._NATIVE_STUB)
+    logger.info("translate _NATIVE_STUB")
+    sourcePath = Config.Path._NATIVE_STUB
     for file in os.listdir(sourcePath):
         inputFile = os.path.join(sourcePath, file)
         exitFunctions = set()

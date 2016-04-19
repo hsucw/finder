@@ -15,7 +15,7 @@ class Includer(object):
         self.myName = fileName.split("/")[-1].split(".")[0]
         self.rPath = path.relpath(self.current, root)
         self.packages = ""
-        
+
         self.includes = {}
         self.needSolve = set()
         self.inherits = set()
@@ -30,7 +30,7 @@ class Includer(object):
                     abspath = absjoin(self.current, file)
                     self.packages = cls
                     self.include(cls, abspath)
-        
+
     def addImport(self, pkg, isStatic):
         if  isStatic:
             pkg = ".".join(pkg.split(".")[:-1])
@@ -47,6 +47,7 @@ class Includer(object):
         # get last class name
         mtype = mtype.split(".")[0]
 
+        logger.debug("addInherit: {}".format(mtype))
         if  mtype == self.myName:
             return
         if  mtype == "Exception":
@@ -118,7 +119,7 @@ class NonIncludeClass(Exception):
     pass
 
 if __name__ == '__main__':
-    root = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/core/java"
+    root = "/media/android/source-5.1.1_r1/frameworks/base/core/java"
     file = root + "/android/content/pm/PackageInfo.java"
     includer = Includer(root, file)
-    print  pkg2path(root, "os.content.Parcel")
+    print  pkg2path(root, "android.os.Parcel")

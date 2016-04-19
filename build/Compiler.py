@@ -151,7 +151,7 @@ class Compiler(object):
         """ entry function """
         self.preprocess(body)
         self.solver(body)
-       
+
         while(not self.deferManager.isEmpty()):
             for cls in self.deferManager.sort():
                 self.vManager.setSnapshot(cls.snapshot)
@@ -177,14 +177,14 @@ class Compiler(object):
         dependsPkgs = self.iAdaptor.getInherits()
         dependsPkgs = dependsPkgs.union(self.iAdaptor.getMore(self.fieldUsedName))
         self.imports = includer.getMore(self.totalUsed).union(dependsPkgs)
-            
+
         builtinImports = [
             "from lib.Switch import Switch\n",
             "from lib.BasicObject import BasicObject\n",
         ]
         prefix = "".join(builtinImports) + "".join(["from {} import *\n".format(pkg) for pkg in dependsPkgs])
         return prefix + result
-    
+
     def CompilationUnit(self, body):
         package_declaration = self.solver(body.package_declaration)
         for importer in body.import_declarations:
@@ -209,6 +209,7 @@ class Compiler(object):
 
         tmp = set()
         for impl in implements:
+            logger.debug("InterfaceDeclaration: addInherit{}".format(impl))
             try:
                 self.vManager.addInherit(impl)
             except Includer.NonIncludeClass as e:
@@ -271,6 +272,7 @@ class Compiler(object):
 
         tmp = set()
         for impl in implements:
+            logger.debug("ClassDeclaration: addInherit{}".format(impl))
             try:
                 self.vManager.addInherit(impl)
             except Includer.NonIncludeClass as e:
@@ -352,7 +354,7 @@ class Compiler(object):
         self.solver(body.block)
 
     def EmptyDeclaration(self, body):
-        return 
+        return
 
     def FieldDeclaration(self, body):
         mtype = self.solver(body.type)
@@ -492,7 +494,7 @@ class Compiler(object):
     def Synchronized(self, body):
         #self.p("synchronized({})\n".format(body.monitor), offset=-1)
         self.solver(body.body)
-        
+
     @scoped
     def IfThenElse(self, body):
         predicate = self.solver(body.predicate, inCondition = True)
@@ -502,7 +504,7 @@ class Compiler(object):
         else:
             result = self.solver(body.if_true)
             self.p("{}\n".format(result)) if result else None
-        
+
         if  body.if_false != None:
             self.p("else:\n", offset=-1)
             result = self.solver(body.if_false)
@@ -611,8 +613,8 @@ class Compiler(object):
         raise Undefined
 
     def Assert(self, body):
-        return 
-    
+        return
+
     def Assignment(self, body):
         # Assignment(operator='=', lhs=Name(value='_arg1'), rhs=MethodInvocation(name='readInt', arguments=[], type_arguments=[], target=Name(value='data')))
         curframe = inspect.currentframe()
@@ -678,7 +680,7 @@ class Compiler(object):
             return value
         value = self.vManager.decorate(value, SELF_INSTANCE)
         return value
-        
+
     @itemFilter
     def Literal(self, body):
         value = body.value
@@ -778,10 +780,10 @@ class Compiler(object):
         if body.target is None:
             name = self.vManager.decorate(name, SELF_INSTANCE)
             return "{name}({args})".format(name = name, args = ", ".join(args))
-        
+
         targets = self.solver(body.target).split(".")
         # IIntentReceiver.Stub.asInterface
-        if  name == "asInterface" and targets[0][0] == "I" and targets[1] == "Stub": 
+        if  name == "asInterface" and targets[0][0] == "I" and targets[1] == "Stub":
             #return strongBinder
             return "{}.asInterface(\"{}\")".format(args[0], ".".join(targets[:2]))
 
@@ -795,10 +797,11 @@ class Compiler(object):
         return "{}.{}({})".format(".".join(keywordReplace_helper(i) for i in targets), name, ", ".join(args))
 
     def ExpressionStatement(self, body):
+        raise Undefined("plyj 0.2")
         return
 
     def Wildcard(self, body):
-        return 
+        return
 
     def InstanceOf(self, body):
         return "isinstance({}, {})".format(self.solver(body.lhs), self.solver(body.rhs))
@@ -836,7 +839,7 @@ class Compiler(object):
         lhs = self.solver(body.lhs)
         rhs = self.solver(body.rhs)
         return "({} {} {})".format(lhs, operator, rhs)
-    
+
     def Equality(self, body):
         operator = self.solver(body.operator)
         lhs = self.solver(body.lhs)
@@ -856,7 +859,7 @@ class Compiler(object):
         if type(body.lhs) == plyj.Literal and lhs.find("E") > 0:
             return "{}{}{}".format(lhs, operator, rhs)
         return "({} {} {})".format(lhs, operator, rhs)
-    
+
     def Unary(self, body):
         """
         sign=<type 'str'>
@@ -919,7 +922,7 @@ class Compiler(object):
         initializer = body.initializer
         self.c(mtype)
         return "{dimensions}".format(dimensions = dimensions)
-    
+
     def ArrayAccess(self, body):
         index = self.solver(body.index)
         target = self.solver(body.target)
@@ -964,7 +967,7 @@ class Compiler(object):
             self.p("    func = getattr({}, fname)\n".format(clsName))
             self.p("    return func(*args)\n")
 
-         
+
 class Undefined(Exception):
     pass
 
@@ -991,7 +994,7 @@ def dumper(body, stop = False):
 
 if __name__ == '__main__':
     logging.basicConfig(level = logging.INFO)
-    
+
     root = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/core/java"
     inputPath = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/core/java/android/os/StrictMode.java"
     # inputPath = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/telecomm/java/android/telecom/PhoneAccountHandle.java"

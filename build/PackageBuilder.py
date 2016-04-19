@@ -16,7 +16,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
 
     sourcePool = Config.System.JAVA_LIBS
-    out = path.join(Config.Path.CUROUT, "java")
+    out = Config.Path.CREATOR
     if not os.path.exists(out):
         os.mkdir(out)
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
             targetFile = path.join(out, path.relpath(file, source)).replace(".java", ".py")
             targetDir = path.dirname(targetFile)
-            
+
             if  os.path.isfile(targetFile):
                 continue
 
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
             if not os.path.exists(targetDir):
                 os.makedirs(targetDir)
-                
+
             with open(targetFile, "w") as targetFd:
                 targetFd.write(result)
 
