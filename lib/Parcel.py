@@ -23,9 +23,9 @@ def hook(func):
         curframe = inspect.currentframe()
         calframe = inspect.getouterframes(curframe, 1)
         code = calframe[1][4][0].replace(' ', "").replace("\n", "")
-        print "module: {}:{}".format(calframe[1][1], calframe[1][2])
+        print("module: {}:{}".format(calframe[1][1], calframe[1][2]))
         _result = func(self, *args, **kargs)
-        print "\t{}    #{}".format(code, _result)
+        print("\t{}    #{}".format(code, _result))
         return _result
     return hookFunction
 
@@ -155,7 +155,7 @@ class Parcel(object):
 
     def readValue(self, loader):
         type = self.readInt()
-        
+
         if  type==VAL_NULL:
             return None
         elif type == VAL_STRING:
@@ -194,7 +194,7 @@ class Parcel(object):
             return self.createLongArray()
         elif type == VAL_BYTE:
             return self.readByte()
-        
+
     @hook
     def readString(self):
         result = self.readString16()
@@ -280,7 +280,7 @@ class Parcel(object):
     @hook
     def createTypedArrayList(self, creator):
         if  type(creator) == str:
-            print creator
+            print(creator)
         n = self.readInt()
         if  n < 0:
             return None
@@ -335,7 +335,7 @@ class Parcel(object):
             printable = ''.join(["%s" % ((ord(x) <= 127 and FILTER[ord(x)]) or '.') for x in chars])
             lines.append("%04x  %-*s  %s\n" % (c, length*3, hex, printable))
         return ''.join(lines)
-        
+
 class IllegalParcel(Exception):
     pass
 
@@ -346,6 +346,6 @@ if __name__ == '__main__':
     #hex = "870b00002000000061006e00640072006f00690064002e006e00650074002e0049004e006500740077006f0072006b0053007400610074007300530065007200760069006300650000000000"
     hex = "2000000061007200640072006f00690064002e006e00650074002e0049004e006500740077006f0072006b0053007400610074007300530065007200760069006300650000000000"
     p = Parcel(hex)
-    print p.hexdump()
+    print(p.hexdump())
     id = p.readString16()
-    print id
+    print(id)

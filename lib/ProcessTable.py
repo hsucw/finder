@@ -40,7 +40,7 @@ class ProcessTable(object):
 
         if  pid not in self.table:
             raise NoneExistPid
-        
+
         return (self.table[pid]["name"], self.table[pid]["type"])
 
     def readFromPs(self, ps):
@@ -57,11 +57,11 @@ class ProcessTable(object):
 
     def dumpTable(self):
         for node in self.table:
-            print "      {0:>5s}  [{2}]{1:<40s}".format(node, self.table[node]["name"], self.table[node]["type"][0])
+            print("      {0:>5s}  [{2}]{1:<40s}".format(node, self.table[node]["name"], self.table[node]["type"][0]))
 
 class NotEqualInt(Exception):
     pass
-        
+
 class NoneExistPid(Exception):
     pass
-        
+

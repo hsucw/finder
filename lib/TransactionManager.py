@@ -69,7 +69,7 @@ class TransactionManager(object):
         except ProcessTable.NoneExistPid:
             setattr(transaction, "to_proc_name", UNKNOWN_NAME)
         #self.transactions.append(transaction)
-        
+
     def registFilter(self, filter):
         self.filter = filter
 
@@ -100,8 +100,8 @@ class TransactionManager(object):
                     continue
                 if  self.filter and not self.filter.isPass(tra, descriptor, code):
                     continue
-                print ",".join(str(i) for i in [tra.time, tra.debug_id, tra.from_proc_name, tra.to_proc_name, descriptor, code])
-        
+                print(",".join(str(i) for i in [tra.time, tra.debug_id, tra.from_proc_name, tra.to_proc_name, descriptor, code]))
+
 
     def solve(self, tra):
         if  tra.type == "BC_TRANSACTION":
@@ -109,7 +109,7 @@ class TransactionManager(object):
                 descriptor, code = self.lookup(tra)
             except LookupException as e:
                 #logger.warn(e)
-                return 
+                return
             except HardwareDescriptor:
                 return
 
@@ -120,15 +120,15 @@ class TransactionManager(object):
 
 
             if  not Config.NOT_SOLVE:
-                print "=============================="
+                print("==============================")
                 #print "#{}[{}] {} ==> {} / [{}]: {}".format(tra.debug_id, datetime.fromtimestamp(tra.time).strftime('%Y-%m-%d %H:%M:%S'), tra.from_proc_name, tra.to_proc_name, descriptor, code)
-                print "#{} {} ==> {} / [{}]: {}".format(tra.debug_id, tra.from_proc_name, tra.to_proc_name, descriptor, code)
+                print("#{} {} ==> {} / [{}]: {}".format(tra.debug_id, tra.from_proc_name, tra.to_proc_name, descriptor, code))
                 #print "{{{"
                 result = self.sSolver.solve(descriptor, code, tra.parcel)
                 #print "}}}"
 
                 if  result:
-                    print "\t{}({})".format(result[0], ", ".join(str(i) for i in result[1:]))
+                    print("\t{}({})".format(result[0], ", ".join(str(i) for i in result[1:])))
                     Module.getModule().call("SOLVING_SUCCESS", *result)
                 else:
                     Module.getModule().call("SOLVING_FAIL")

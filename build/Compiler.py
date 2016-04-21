@@ -993,10 +993,10 @@ def dumper(body, stop = False):
         exit()
 
 if __name__ == '__main__':
-    logging.basicConfig(level = logging.INFO)
+    logging.basicConfig(level = logging.DEBUG)
 
-    root = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/core/java"
-    inputPath = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/core/java/android/os/StrictMode.java"
+    root = "/media/android/source-5.1.1_r1/frameworks/base/core/java"
+    inputPath = "/media/android/source-5.1.1_r1/frameworks/base/core/java/android/os/StrictMode.java"
     # inputPath = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/telecomm/java/android/telecom/PhoneAccountHandle.java"
     with open(inputPath, "r") as inputFd:
         compiler = Compiler(sys.stdout)

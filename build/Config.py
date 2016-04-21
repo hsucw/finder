@@ -4,7 +4,8 @@ from os import path
 from xml.etree import ElementTree
 import os
 import sys
-sys.path.append("../lib")
+LIBPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../lib"))
+sys.path.append(LIBPATH)
 
 def absjoin(*args):
     return path.abspath(path.join(*args))
@@ -14,11 +15,11 @@ class Config(object):
         pass
 
     def dump(self):
-        print "Class name : " + self.__class__.__name__
+        print("Class name : " + self.__class__.__name__)
         for mem in [attr for attr in dir(self) if not callable(attr) and not attr.startswith("__")]:
             if  mem in ["dump", "configure", "setVersion"]:
                 continue
-            print "{0:>12} {1}".format(mem, getattr(self, mem))
+            print("{0:>12} {1}".format(mem, getattr(self, mem)))
 
 class PathInfo(Config):
     def __init__(self):

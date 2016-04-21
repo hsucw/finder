@@ -75,7 +75,7 @@ class Parser(Iterator):
                     offset = raw.find(self._write_read) + len(self._write_read) + 1
                     logger.warn("unknown readable raw type {}.{} ...".format(self._write_read, raw[offset:offset+10]))
                     continue
-                
+
                 info = infoCreator(raw)
                 if  "length" in info and info["length"] == "0":
                     continue
@@ -90,7 +90,7 @@ class Parser(Iterator):
                 break
 
         return flag
-        
+
     def getRaw(self):
         """get raw data of line"""
         return self.raw
@@ -98,7 +98,7 @@ class Parser(Iterator):
     def getInfo(self):
         """return parsed data with dict type data structure"""
         return self.info
-    
+
     def getDebug(self):
         return {"raw" : self.raw, "lineno" : self.lineno}
 
@@ -117,7 +117,7 @@ def infoCreator(raw_info):
         except ValueError:
             logger.warn("seperate error: " + attr)
         info[key] = val
-        
+
     return info
 
 if __name__ == '__main__':
@@ -125,5 +125,5 @@ if __name__ == '__main__':
     with open("sample/kmsg.short", "r") as fd:
         p = Parser(fd)
         for flag in p:
-            print p.getDebug()
-    
+            print(p.getDebug())
+

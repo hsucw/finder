@@ -122,4 +122,4 @@ if __name__ == '__main__':
     root = "/media/android/source-5.1.1_r1/frameworks/base/core/java"
     file = root + "/android/content/pm/PackageInfo.java"
     includer = Includer(root, file)
-    print  pkg2path(root, "android.os.Parcel")
+    print  pkg2path(root, "Debug.MemoryInfo")

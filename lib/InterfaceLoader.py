@@ -24,20 +24,20 @@ class InterfaceLoader(object):
         elif code not in self.descriptors[descriptor]:
             print "not found code = " + code
         else:
-            print 
+            print
         """
         try:
             return self.descriptors[descriptor][code]
         except:
             raise NoneExistCode
-        
+
 
 class NoneExistCode(Exception):
     pass
-        
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     iLoader = InterfaceLoader("/home/lucas/WORKING_DIRECTORY/kernel/goldfish/Finder/out/interface/")
     if  "android.content.IContentService" in iLoader.descriptors:
-        print "yes"
+        print("yes")

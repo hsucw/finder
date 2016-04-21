@@ -25,16 +25,16 @@ class Solver(object):
             result = onTransact(code, data, Parcel.Parcel(""))
             return result
         except Parcel.IllegalParcel as e:
-            print descriptor, code
-            print data
-            print e
-            print traceback.format_exc()
+            print(descriptor, code)
+            print(data)
+            print(e)
+            print(traceback.format_exc())
         except Parcel.NoneImplementFunction as e:
             logger.warn(e)
         except Stub.CallCreator as e:
             logger.warn(e)
         except:
-            print traceback.format_exc()
+            print(traceback.format_exc())
         return False
 
 class NoDescriptorModule(Exception):
