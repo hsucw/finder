@@ -38,6 +38,7 @@ class SystemInfo(Config):
         self.FRAMEWORK      = path.abspath(path.join(self.WORKINGDIR, "frameworks"))
         self.SYSTEM         = path.abspath(path.join(self.WORKINGDIR, "system"))
         self.PACKAGES       = path.abspath(path.join(self.WORKINGDIR, "packages"))
+        self.LIBMAIN        = path.abspath(path.join(self.WORKINGDIR, "libcore/luni/src/main/java/"))
         self.LIBCORE        = path.abspath(path.join(self.WORKINGDIR, "libcore/luni/src/main/java/libcore/"))
         self.LIBJAVA        = path.abspath(path.join(self.WORKINGDIR, "libcore/luni/src/main/java/java/"))
         self.JAVA_ANDROID   = path.abspath(path.join(self.WORKINGDIR, "frameworks/base/core/android/java"))
@@ -47,7 +48,8 @@ class SystemInfo(Config):
         self.JAVA_TELEPHONY = path.abspath(path.join(self.WORKINGDIR, "frameworks/base/telephony/java/"))
         self.JAVA_MEDIA     = path.abspath(path.join(self.WORKINGDIR, "frameworks/base/media/java/"))
         self.JAVA_LOCATION  = path.abspath(path.join(self.WORKINGDIR, "frameworks/base/location/java/"))
-        self.JAVA_LIBS      = [self.JAVA_POOL, self.JAVA_GRAPHIC, self.JAVA_TELECOMM, self.JAVA_TELEPHONY, self.JAVA_MEDIA, self.JAVA_LOCATION]
+        self.JAVA_LIBS      = [self.JAVA_POOL, self.JAVA_GRAPHIC, self.JAVA_TELECOMM, self.JAVA_TELEPHONY, \
+                self.JAVA_MEDIA, self.JAVA_LOCATION, self.LIBMAIN]
         self.AIDL_CACHE     = path.abspath(path.join(self.WORKINGDIR, "out/target/common/obj/JAVA_LIBRARIES/"))
 
         manifest_root = ElementTree.parse(path.join(self.WORKINGDIR, '.repo/manifest.xml')).getroot()

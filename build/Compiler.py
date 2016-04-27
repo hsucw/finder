@@ -997,8 +997,11 @@ if __name__ == '__main__':
 
     root = "/media/android/source-5.1.1_r1/frameworks/base/core/java"
     inputPath = "/media/android/source-5.1.1_r1/frameworks/base/core/java/android/os/StrictMode.java"
+    #root = sys.argv[1]
+    #inputPath = sys.argv[2]
     # inputPath = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/telecomm/java/android/telecom/PhoneAccountHandle.java"
     with open(inputPath, "r") as inputFd:
         compiler = Compiler(sys.stdout)
         print compiler.compilePackage(root, inputPath)
         imports = compiler.imports
+        print imports

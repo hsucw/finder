@@ -479,6 +479,8 @@ class Compiler(object):
                 if  len( _result.split(".") ) <= 1:
                     raise Exception(_result)
                 """
+                # This should return the Intent
+                # Instead of android.content.Intent
                 creators.add(_result)
                 logger.debug("ADD .CREATOR {}".format(_result))
             else:
@@ -515,11 +517,20 @@ class Compiler(object):
                 if offset < 0:
                    raise NotFoundStub
             target = target[:offset]
+            # For some class Debug.MemoryInfo
+            # Debug is in imports android.os.Debug
+            alt_target = target.split('.')[0]
             if  target in self.imports:
                 target = self.imports[target]
             elif target in self.siblings:
                 target = "{}.{}".format(self.pkgName, target)
+            elif alt_target in self.imports:
+            # import[android.os.Debug] alt_target = "Debug"
+                target = self.imports[alt_target]
+            elif alt_target in self.siblings:
+                target = "{pkgname}.{clsname}".format(pkgname=self.pkgName, clsname=alt_target )
             args.insert(0, "\"{}\"".format(target))
+
             """
             if  len( target.split(".") ) <= 1:
                 raise Exception(target)

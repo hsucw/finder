@@ -9,6 +9,7 @@ import sys
 import Config
 import Includer
 import Compiler
+import subprocess
 
 logger = logging.getLogger(__name__)
 
@@ -55,8 +56,31 @@ if __name__ == '__main__':
                 if  os.path.isfile(file):
                     break
             else:
-                logger.warn("Unknown file: {}".format(file))
-                continue
+                logger.warn("Find framework file ...{}".format(pkg))
+                source = Config.System.FRAMEWORK
+                result = []
+                stop = False
+                tmp_pkg = pkg
+                while tmp_pkg.find('.') > 0 and not stop:
+                    f_basename = tmp_pkg.split('.')[-1]+".java"
+                    f_root = "/".join(tmp_pkg.split('.')[:-1])
+                    res = subprocess.check_output(["find", source, "-name", f_basename])
+                    if res is not "":
+                        f_list = res.split("\n")
+                        for r in f_list:
+                            if r.find(f_root) > 0:
+                                result.append(r)
+                                stop = True
+                    tmp_pkg = ".".join(tmp_pkg.split('.')[:-1])
+
+                if len(result) is 0:
+                    logger.warn("Unknown file: {}".format(pkg))
+                    continue
+                elif len(result) is 1:
+                    file = result.pop(0)
+                else:
+                    logger.warn("Multiple file: {}".format(result))
+                    continue
 
 
             targetFile = path.join(out, path.relpath(file, source)).replace(".java", ".py")
@@ -65,7 +89,7 @@ if __name__ == '__main__':
             if  os.path.isfile(targetFile):
                 continue
 
-            logger.info("<<<NEW FILE>>> # {}".format(file))
+            logger.info("<<<NEW FILE>>> # {}".format(targetFile))
 
             compiler = Compiler.Compiler()
             try:
