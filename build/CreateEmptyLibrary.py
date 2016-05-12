@@ -171,7 +171,7 @@ class SimpleCompiler(Compiler.Compiler):
         else:
             self.p("def {}({}):\n".format(functionName, ", ".join(args)), offset = -1)
         self.p("pass\n")
-        
+
 
     def FieldDeclaration(self, body):
         mtype = self.solver(body.type)
@@ -188,6 +188,7 @@ class SimpleCompiler(Compiler.Compiler):
                 result = "{} = {}\n".format(variable, initializer)
             else:
                 result = "{} = None\n".format(variable)
+            logger.debug("FieldDeclar:{}".format(result))
             self.p(result)
 
 if __name__ == '__main__':
@@ -196,10 +197,11 @@ if __name__ == '__main__':
     source = Config.System.LIBJAVA
     out    = path.abspath(path.join(Config.Path.OUT, Config.System.VERSION, "java/java"))
 
+
     for root, dirs, files in os.walk(source):
         files = [i for i in files if i.endswith(".java")]
         for file in files:
-            inPath = root 
+            inPath = root
             inFile = path.abspath(path.join(inPath, file))
             outPath = path.abspath(path.join(out, path.relpath(inPath, source)))
             outFile = path.abspath(path.join(outPath, file.replace(".java", ".py")))
@@ -207,7 +209,15 @@ if __name__ == '__main__':
             logger.info(inFile)
             parser = plyj.Parser().parse_file(inFile)
             result = compiler.compile(parser)
-            
+
+            builtinImports = [
+                "from lib.Switch import Switch\n",
+                "from lib.BasicObject import BasicObject\n",
+            ]
+
+            prefix = "".join(builtinImports)
+
+            result = prefix + result
             if not os.path.exists(outPath):
                 os.makedirs(outPath)
             outFd = open(outFile, "w")
@@ -225,14 +235,23 @@ if __name__ == '__main__':
     for root, dirs, files in os.walk(source):
         files = [i for i in files if i.endswith(".java")]
         for file in files:
-            inPath = root 
+            inPath = root
             inFile = path.abspath(path.join(inPath, file))
             outPath = path.abspath(path.join(out, path.relpath(inPath, source)))
             outFile = path.abspath(path.join(outPath, file.replace(".java", ".py")))
             compiler = SimpleCompiler()
             parser = plyj.Parser().parse_file(inFile)
             result = compiler.compile(parser)
-            
+
+            builtinImports = [
+                "from lib.Switch import Switch\n",
+                "from lib.BasicObject import BasicObject\n",
+            ]
+
+            prefix = "".join(builtinImports)
+
+            result = prefix + result
+
             if not os.path.exists(outPath):
                 os.makedirs(outPath)
             outFd = open(outFile, "w")

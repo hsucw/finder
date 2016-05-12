@@ -17,7 +17,7 @@ class Solver(object):
 
     def solve(self, descriptor, code, data):
         if  descriptor not in self.sLoader.stubs:
-            raise NoDescriptorModule("Not found descriptor: [{}]".format(descriptor))
+            raise NoDescriptorModule("Not found descriptor: [{}] in {}".format(descriptor, self.sLoader.stubs))
 
         logger.debug("Solve [{}]/{} ".format(descriptor, code))
         onTransact = self.sLoader.stubs[descriptor].onTransact

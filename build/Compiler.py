@@ -183,6 +183,7 @@ class Compiler(object):
             "from lib.BasicObject import BasicObject\n",
         ]
         prefix = "".join(builtinImports) + "".join(["from {} import *\n".format(pkg) for pkg in dependsPkgs])
+        #prefix = "".join(builtinImports) + "".join(["from {} import *\n".format(pkg) for pkg in self.imports])
         return prefix + result
 
     def CompilationUnit(self, body):
@@ -1001,7 +1002,7 @@ if __name__ == '__main__':
     #inputPath = sys.argv[2]
     # inputPath = "/Volumes/android/sdk-source-5.1.1_r1/frameworks/base/telecomm/java/android/telecom/PhoneAccountHandle.java"
     with open(inputPath, "r") as inputFd:
-        compiler = Compiler(sys.stdout)
+        compiler = Compiler()
         print compiler.compilePackage(root, inputPath)
-        imports = compiler.imports
-        print imports
+        #imports = compiler.imports
+        #print imports

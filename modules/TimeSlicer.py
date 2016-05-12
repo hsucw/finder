@@ -16,7 +16,7 @@ import operator
 from collections import defaultdict
 from collections import OrderedDict
 
-import tools.Config as Config
+import build.Config as Config
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ class Session(object):
     def add(self, tra, descriptor, code):
         global gRevTypeTable
         tra.time = int(tra.time)
-        
+
         if  self.preTime == 0:
             self.preTime = tra.time
         elif self.preTime + self.quantum < tra.time:
@@ -75,7 +75,7 @@ class Session(object):
         self.countTable[name] += 1
 
 gSession = None
-        
+
 
 gConfig = {}
 gSections = set()
@@ -93,7 +93,7 @@ def load(parser):
 
 def start():
     global gConfig
-    global gSession 
+    global gSession
     parser = ConfigParser.RawConfigParser(allow_no_value=True)
     parser.optionxform = str
     parser.read(Config.absjoin(Config.Path.MODULE, "TimeSlicer.ini" ))

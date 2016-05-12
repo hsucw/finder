@@ -13,26 +13,25 @@ class StubLoader(object):
         self.package = stubFolderName
         self.stubs = {}
         count = 0
-        if  loadOnly is not None:
-            for module in loadOnly:
-                descriptor, instance = self.loadStubModule(module)
-                self.stubs[descriptor] = instance
-                count += 1
-        else: # load all modules
-            for module_loader, name, ispkg in pkgutil.iter_modules([stubFolderName]):
-                descriptor, instance = self.loadStubModule(name)
-                self.stubs[descriptor] = instance
-                count += 1
+        sys.path.append(stubFolderName)
+
+        for module_loader, name, ispkg in pkgutil.iter_modules([stubFolderName]):
+            if loadOnly is not None:
+                if name not in loadOnly:
+                    next
+
+            module = module_loader.find_module(name).load_module(name)
+            instance = module.OnTransact()
+            try:
+                descriptor = instance.descriptor if hasattr(instance, "descriptor") else instance.DESCRIPTOR
+            except AttributeError:
+                logger.warn("Cannot Find Descriptor in {}".format(name))
+                next
+            self.stubs[descriptor] = instance
+            logger.debug("Load stub: [{}] = {}".format( descriptor, name))
+            count += 1
         logger.info("Total load in {} modules".format(count))
 
-    def loadStubModule(self, name):
-        _from   = "{}.{}".format(self.package, name)
-        _import = name
-        module  = __import__(_from, globals(), locals(), [_import])
-        instance = module.OnTransact()
-        descriptor = instance.descriptor if hasattr(instance, "descriptor") else instance.DESCRIPTOR
-        logger.debug("Load in: [{}] = {}".format( descriptor, _from))
-        return descriptor, instance
 
 class Property(object):
     pass
@@ -40,4 +39,6 @@ class Property(object):
 if __name__ == '__main__':
     logging.basicConfig(level = logging.DEBUG)
 
-    sloader = StubLoader("Stubs")
+    sloader = StubLoader(sys.argv[1])
+
+

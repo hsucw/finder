@@ -10,7 +10,7 @@ import sys
 import os
 import json
 from collections import defaultdict
-import tools.Config as Config
+import build.Config as Config
 
 logger = logging.getLogger(__name__)
 

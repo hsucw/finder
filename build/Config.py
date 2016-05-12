@@ -93,10 +93,11 @@ Path.CUROUT       = path.abspath(path.join( Path.OUT, System.VERSION))
 Path._IINTERFACE  = path.abspath(path.join( Path.CUROUT, "_IInterface" ))
 Path._HARDWARE    = path.abspath(path.join( Path.CUROUT, "_Hardware" ))
 Path._NATIVE_STUB = path.abspath(path.join( Path.CUROUT, "_NativeStub" ))
+Path.TC           = path.abspath(path.join( Path.CUROUT, "transaction_code" ))
 Path.STUB         = path.abspath(path.join( Path.CUROUT, "stub" ))
 Path.CREATOR      = path.abspath(path.join( Path.CUROUT, "java" ))
-Path.MODULE       = path.abspath(path.join( Path.CUROUT, "modules" ))
-Path.EVAL         = path.abspath(path.join( Path.CUROUT, "evaluation" ))
+Path.MODULE       = path.abspath(path.join( Path.PROJECT, "modules" ))
+Path.EVAL         = path.abspath(path.join( Path.PROJECT, "evaluation" ))
 
 
 

@@ -27,7 +27,7 @@ def parseTransactionCode(inputFd):
     #find stub class
     body = interface_declaration.body
     for node in interfaceBody:
-        if type(node) == model.ClassDeclaration and node.name == "Stub": 
+        if type(node) == model.ClassDeclaration and node.name == "Stub":
             body = node.body
             break
 
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)
 
     inputDir  = Config.Path._IINTERFACE
-    outputDir = os.path.join(Config.Path.CUROUT , "transaction_code")
+    outputDir = os.path.join(Config.Path.TC)
     filePaths = os.listdir(inputDir)
 
     if not os.path.exists(outputDir):

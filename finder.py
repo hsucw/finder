@@ -29,8 +29,8 @@ def finder(fd, filter=None, ps=None):
     pAdaptor = PAdaptor.ProcessAdaptor(pTable)
 
     #loaders
-    iLoader = ILoader.InterfaceLoader(os.path.join(Config.Path.CUROUT, "interface"))
-    sSolver = StructureSolver.Solver("Stubs")
+    iLoader = ILoader.InterfaceLoader(os.path.join(Config.Path.TC))
+    sSolver = StructureSolver.Solver(Config.Path.STUB)
 
 
     #transaction manger
@@ -52,12 +52,12 @@ def finder(fd, filter=None, ps=None):
                 logging.warn("unknown rule: " + str(info))
         elif flag == Parse.WRITE_READ:
             try:
-                tra =  Transaction.Transaction(sys_log.getInfo()) 
+                tra =  Transaction.Transaction(sys_log.getInfo())
                 tManager.addTransaction(tra)
                 tManager.solve(tra)
             except Transaction.TransactionError as e:
                 logger.warn("transaction error: " + e.args[0])
-    
+
     # dump unfound descriptor with code
     logger.info(tManager.getMissedTransaction())
 
@@ -99,14 +99,14 @@ def parseArgument():
     return args
 
 if __name__ == '__main__':
-    logging.basicConfig(level = logging.INFO)
+    logging.basicConfig(level = logging.DEBUG)
     logger = logging.getLogger(__name__)
 
     args = parseArgument()
     filter = FilterAdaptor(args).getFilter()
-    
+
     #loaded modules
     Module.getModule().add("Statistic")
     Module.getModule().add("TimeSlicer")
-    
+
     finder(args.input, filter=filter, ps=args.ps)
