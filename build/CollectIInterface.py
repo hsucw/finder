@@ -52,6 +52,8 @@ if __name__ == '__main__':
     core      = Config.System.JAVA_POOL
     native    = Config.Path._NATIVE_STUB
     hardware  = Config.Path._HARDWARE
+    packages  = Config.System.PACKAGES
+    system    = Config.System.SYSTEM
 
     # Check the out fold existence
     if not os.path.exists(interface):
@@ -79,4 +81,6 @@ if __name__ == '__main__':
 
     logger.info("Collecting Hardware interface: ")
     recursiveCopy(framework, hardware, excludePattern, ["I*.cpp"], hardwarePattern)
+    recursiveCopy(packages, hardware, excludePattern, ["I*.cpp"], hardwarePattern)
+    recursiveCopy(system, hardware, excludePattern, ["I*.cpp"], hardwarePattern)
 

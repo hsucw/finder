@@ -59,7 +59,7 @@ def solve_fail():
 
 def end():
     if  eTotal != 0 and total != 0:
-        out = os.path.abspath(os.path.join(Config.Path.OUT, Config.System.VERSION, "Report"))
+        out = os.path.abspath(os.path.join(Config.Path.CUROUT, "Report"))
         with open(out, "w") as outFd:
             outFd.write("{}\n".format(json.dumps(solvingTable, indent=4, sort_keys=True)))
             outFd.write("\n{}\n=========================\n".format("Solving Rate"))

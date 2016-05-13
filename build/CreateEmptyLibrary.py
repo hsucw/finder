@@ -195,7 +195,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
     source = Config.System.LIBJAVA
-    out    = path.abspath(path.join(Config.Path.OUT, Config.System.VERSION, "java/java"))
+    out    = path.abspath(path.join(Config.Path.CUROUT, "java/java"))
 
 
     for root, dirs, files in os.walk(source):
@@ -230,7 +230,7 @@ if __name__ == '__main__':
             os.utime(init, None)
 
     source = Config.System.LIBCORE
-    out    = path.abspath(path.join(Config.Path.OUT, Config.System.VERSION, "java/libcore"))
+    out    = path.abspath(path.join(Config.Path.CUROUT, "java/libcore"))
 
     for root, dirs, files in os.walk(source):
         files = [i for i in files if i.endswith(".java")]
