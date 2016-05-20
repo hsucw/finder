@@ -116,11 +116,12 @@ class Compiler(object):
         indents =  self.indentPattern * (self.level + offset)
         result = ""
 
-        if  len(self.usedName) > 0:
-            more = self.iAdaptor.getMore(self.usedName) - self.iAdaptor.getInherits()
-            if  len(more) > 0:
-                for imp in more:
-                    result += "{}from {} import *\n".format(indents, imp)
+        # remove import in the middle
+        #if  len(self.usedName) > 0:
+        #    more = self.iAdaptor.getMore(self.usedName) - self.iAdaptor.getInherits()
+        #    if  len(more) > 0:
+        #        for imp in more:
+        #            result += "{}from {} import *\n".format(indents, imp)
 
         result += indents + fmt
         while( self.deferExpression):
@@ -182,8 +183,15 @@ class Compiler(object):
             "from lib.Switch import Switch\n",
             "from lib.BasicObject import BasicObject\n",
         ]
-        prefix = "".join(builtinImports) + "".join(["from {} import *\n".format(pkg) for pkg in dependsPkgs])
-        #prefix = "".join(builtinImports) + "".join(["from {} import *\n".format(pkg) for pkg in self.imports])
+        prefix = ""
+        clsname = os.path.basename(filePath).replace(".java", "")
+        prefix += "global {cls}\n{cls} = object\n".format(cls=clsname)
+        #for sym in self.totalUsed:
+        #    prefix += "global {cls}\n{cls} = object\n".format(cls=sym)
+        #prefix += "".join(builtinImports) + "".join(["from {} import *\n".format(pkg) for pkg in dependsPkgs])
+        #prefix += "".join(["from {} import *\n".format(pkg) for pkg in self.imports])
+        prefix += "".join(builtinImports) + "".join(["from {} import *\n".format(pkg) for pkg in self.imports])
+
         return prefix + result
 
     def CompilationUnit(self, body):

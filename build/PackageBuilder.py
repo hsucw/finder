@@ -35,6 +35,8 @@ if __name__ == '__main__':
         for pkg in pkgs:
             if  pkg.find(".") > 0:
                 imports.add(pkg)
+            else:
+                logger.warn("Ignoring error format:{}".format(pkg))
 
     # empty set
     solvedPkgs = set()
@@ -52,11 +54,10 @@ if __name__ == '__main__':
                 continue
 
             for source in sourcePool:
-                file = Includer.pkg2path(source, pkg)
-                if  os.path.isfile(file):
+                pfile = Includer.pkg2path(source, pkg)
+                if  os.path.isfile(pfile):
                     break
             else:
-                logger.warn("Find framework file ...{}".format(pkg))
                 source = Config.System.FRAMEWORK
                 result = []
                 stop = False
@@ -77,13 +78,14 @@ if __name__ == '__main__':
                     logger.warn("Unknown file: {}".format(pkg))
                     continue
                 elif len(result) is 1:
-                    file = result.pop(0)
+                    pfile = result.pop(0)
+                    logger.warn("Find file: {}".format(pfile))
                 else:
                     logger.warn("Multiple file: {}".format(result))
                     continue
 
 
-            targetFile = path.join(out, path.relpath(file, source)).replace(".java", ".py")
+            targetFile = path.join(out, path.relpath(pfile, source)).replace(".java", ".py")
             targetDir = path.dirname(targetFile)
 
             if  os.path.isfile(targetFile):
@@ -93,9 +95,9 @@ if __name__ == '__main__':
 
             compiler = Compiler.Compiler()
             try:
-                result = compiler.compilePackage(source, file)
+                result = compiler.compilePackage(source, pfile)
             except:
-                logger.info(file)
+                logger.info(pfile)
                 logger.info(sys.exc_info)
                 raise
 

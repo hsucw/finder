@@ -160,7 +160,6 @@ class Compiler(object):
         for searchPath in self.dependencyPaths:
             files = os.listdir(searchPath)
             if  filename + ".java" in files:
-                logger.info(name)
                 logger.info("Solving interface: [{}]".format(filename))
                 parser = plyj.Parser()
                 root = parser.parse_file(os.path.join(searchPath, filename + ".java"))
@@ -175,6 +174,10 @@ class Compiler(object):
         self.interfaceCache[filename] = vTable
         variableTree = self._index(vTable, name)
         self.dManager.update(variableTree)
+
+        solved_stubs.add(filename)
+        if filename in missing_stubs:
+            missing_stubs.remove(filename)
 
     def _index(self, rootTree, name):
         candidates = []
@@ -242,6 +245,9 @@ class Compiler(object):
             interface = self.crawlDependency( self.solver(impl) )
             if  interface is not None:
                 implements.append(interface)
+                solved_stubs.add(interface)
+                if interface in missing_stubs:
+                    missing_stubs.remove(interface)
         implements.append("Stub")
 
         name = self.solver(body.name)
@@ -698,6 +704,8 @@ if __name__ == '__main__':
     logging.basicConfig()
     logger.setLevel(logging.INFO)
     creators = set()
+    missing_stubs = set()
+    solved_stubs = set()
 
     """
     exitFunctions = set()
@@ -714,37 +722,48 @@ if __name__ == '__main__':
     if not os.path.exists(outputPath):
         os.makedirs(outputPath)
 
+
     logger.info("translate _IINTERFACE")
     sourcePath = Config.Path._IINTERFACE
-    for file in os.listdir(sourcePath):
-        inputFile = os.path.join(sourcePath, file)
+    for pfile in os.listdir(sourcePath):
+        inputFile = os.path.join(sourcePath, pfile)
         exitFunctions = set()
-        outputFile = os.path.join(outputPath, ".".join(file.split(".")[:-1])+".py")
+        outputFile = os.path.join(outputPath, ".".join(pfile.split(".")[:-1])+".py")
         with open(inputFile, "r") as inputFd, open(outputFile, "w") as outputFd:
-            logger.info("parsing file: [{}]".format(file))
+            logger.info("parsing file: [{}]".format(pfile))
             try:
                 translator(inputFd, outputFd)
             except NotFoundStub as e:
+                mis_interface = pfile.replace(".java","")
+                missing_stubs.add(mis_interface)
                 os.remove(outputFile)
-                logger.warn("Not Found stub in file. # remove '{}'".format(outputFile))
 
     logger.info("translate _NATIVE_STUB")
     sourcePath = Config.Path._NATIVE_STUB
-    for file in os.listdir(sourcePath):
-        inputFile = os.path.join(sourcePath, file)
+    for pfile in os.listdir(sourcePath):
+        inputFile = os.path.join(sourcePath, pfile)
         exitFunctions = set()
         nativeMethodPath = "ClassDeclaration[name$=Proxy]>MethodDeclaration[throws*=RemoteException]"
         result = Selector.Selector(inputFile).query(nativeMethodPath)
         for item in result:
             exitFunctions.add(item.name)
-        outputFile = os.path.join(outputPath, ".".join(file.split(".")[:-1])+".py")
+        outputFile = os.path.join(outputPath, ".".join(pfile.split(".")[:-1])+".py")
         with open(inputFile, "r") as inputFd, open(outputFile, "w") as outputFd:
-            logger.info("parsing file: [{}]".format(file))
+            logger.info("parsing file: [{}]".format(pfile))
             try:
                 translator(inputFd, outputFd)
+                solved_interface = pfile.replace(".java","")
+
             except NotFoundStub as e:
+                mis_interface = pfile.replace(".java","")
+                missing_stubs.add(mis_interface)
                 os.remove(outputFile)
-                logger.warn("Not Found stub in file. # remove '{}'".format(outputFile))
+
+    if len(missing_stubs) > 0:
+        logger.warn("Stubs not found: {}".format(missing_stubs))
+    else:
+        logger.info("Stubs solved:{}".format(len(solved_stubs)))
+        logger.debug("\n{}".format("\n".join(solved_stubs)))
 
     parcelList = path.join( Config.Path.CUROUT, "Parcel_list")
     with open(parcelList, "w") as pfd:
